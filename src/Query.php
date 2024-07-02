@@ -51,7 +51,9 @@ class Query {
         $query = new Query();
         $query
             ->setTerm(isset($array['term']) ? $array['term'] : '')
-            ->setMode(isset($array['mode']) ? $array['mode'] : 'fulltext');
+            ->setMode(isset($array['mode']) ? $array['mode'] : 'fulltext')
+            ->setLimit(isset($array['limit']) ? $array['limit'] : 5)
+            ->setOffset(isset($array['offset']) ? $array['offset'] : 0);
 
         return $query;
     }
