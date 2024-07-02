@@ -41,7 +41,7 @@ jobs:
       - name: Execute tests
         env:
           SESSION_DRIVER: array
-        run: XDEBUG_MODE=coverage ./vendor/bin/phpunit
+        run: XDEBUG_MODE=coverage ./vendor/bin/phpunit tests
 
       # - name: Generate test coverage badge
       #   uses: timkrase/phpunit-coverage-badge@v1.2.1
