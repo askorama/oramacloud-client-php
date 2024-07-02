@@ -13,8 +13,10 @@ class QueryTest extends TestCase {
         $query->setTerm($term);
         $query->setMode($mode);
 
-        $this->assertEquals($term, $query->getTerm());
-        $this->assertEquals($mode, $query->getMode());
+        $result = $query->toArray();
+        
+        $this->assertEquals($term, $result['term']);
+        $this->assertEquals($mode, $result['mode']);
     }
 
     public function testDefaultQueryParamsFromArray() {
@@ -22,7 +24,9 @@ class QueryTest extends TestCase {
 
         $this->assertEquals($query->toArray(), [
             'term' => '',
-            'mode' => 'fulltext'
+            'mode' => 'fulltext',
+            'limit' => 5,
+            'offset' => 0
         ]);
     }
 
@@ -34,7 +38,10 @@ class QueryTest extends TestCase {
 
         $query = Query::fromArray($params);
 
-        $this->assertEquals($params, $query->toArray());
+        $this->assertEquals(array_merge($params, [
+            'limit' => 5,
+            'offset' => 0
+        ]), $query->toArray());
     }
 
     public function testQueryParamsToJson() {
@@ -45,6 +52,9 @@ class QueryTest extends TestCase {
 
         $query = Query::fromArray($params);
         
-        $this->assertEquals($params, json_decode($query->toJson(), true));
+        $this->assertEquals(array_merge($params, [
+            'limit' => 5,
+            'offset' => 0
+        ]), json_decode($query->toJson(), true));
     }
 }

@@ -6,14 +6,12 @@ class Query {
 
     private $term;
     private $mode;
+    private $limit = 5;
+    private $offset = 0;
 
     public function __construct($term = '', $mode = 'fulltext') {
         $this->term = $term;
         $this->mode = $mode;
-    }
-
-    public function getTerm() {
-        return $this->term;
     }
 
     public function setTerm($term) {
@@ -21,19 +19,27 @@ class Query {
         return $this;
     }
 
-    public function getMode() {
-        return $this->mode;
-    }
-
     public function setMode($mode) {
         $this->mode = $mode;
+        return $this;
+    }
+
+    public function setLimit($limit) {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    public function setOffset($offset) {
+        $this->offset = $offset;
         return $this;
     }
 
     public function toArray() {
         return [
             'term' => $this->term,
-            'mode' => $this->mode
+            'mode' => $this->mode,
+            'limit' => $this->limit,
+            'offset' => $this->offset
         ];
     }
 
