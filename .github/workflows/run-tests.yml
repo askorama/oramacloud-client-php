@@ -41,11 +41,11 @@ jobs:
       - name: Execute tests
         env:
           SESSION_DRIVER: array
-        run: XDEBUG_MODE=coverage ./vendor/bin/phpunit tests
+        run: XDEBUG_MODE=coverage ./vendor/bin/phpunit tests --coverage-clover=coverage.xml
 
-      # - name: Generate test coverage badge
-      #   uses: timkrase/phpunit-coverage-badge@v1.2.1
-      #   with:
-      #     coverage_badge_path: ".github/badge-coverage.svg"
-      #     push_badge: true
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Generate test coverage badge
+        uses: timkrase/phpunit-coverage-badge@v1.2.1
+        with:
+          coverage_badge_path: ".github/badge-coverage.svg"
+          push_badge: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
