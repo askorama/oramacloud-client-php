@@ -2,22 +2,34 @@
 
 OramaCloud PHP Client SDK
 
-### Usage
+## Install
+
+```sh
+composer require orama/oramacloud-client
+```
+
+## Integrating with Orama Cloud
 
 ```php
 use OramaCloud\Client;
 use OramaCloud\Query;
 
-$client = new Client(ENDPOINT, API_KEY);
+$client = new Client("<Your Orama Cloud Endpoint>", "<Your Orama Cloud API Key>");
 
-$query = (new Query())
-    ->setTerm('hello world')
-    ->setMode('fulltext');
+$query = Query::fromArray([
+    'term' => 'red shoes'
+]);
 
 $result = $client->search($query);
 ```
 
-### Run Tests
+## Advanced search
+
+```php
+
+```
+
+## Run Tests
 
 ```sh
 composer test

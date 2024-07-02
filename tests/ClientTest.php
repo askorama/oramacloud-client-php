@@ -18,9 +18,7 @@ class ClientTest extends TestCase {
     }
 
     public function testBasicFullTextSearch() {
-        $query = (new Query())
-            ->setTerm('install sdk')
-            ->setMode('fulltext');
+        $query = new Query('install sdk');
 
         $result = $this->client->search($query);
         

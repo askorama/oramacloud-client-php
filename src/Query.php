@@ -29,6 +29,11 @@ class Query {
         return $this;
     }
 
+    public static function fromArray($array) {
+        extract($array);
+        return new Query($term, $mode);
+    }
+
     public function toArray() {
         return [
             'term' => $this->term,
