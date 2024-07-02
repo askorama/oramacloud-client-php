@@ -3,17 +3,15 @@ namespace OramaCloud;
 
 class Endpoints
 {
-    const SEARCH = 'https://cloud.orama.run/v1/indexes/[endpoint]/search';
+    const WEBHOOKS_BASE_URL = 'https://api.askorama.ai/api/v1/webhooks';
 
-    const API_BASE_URL = 'https://api.askorama.ai';
+    const DEPLOY = WEBHOOKS_BASE_URL . '/[indexID]/deploy';
 
-    const API_V1_BASE_URL = API_BASE_URL.'/api/v1/';
-    
-    const SNAPSHOT = API_V1_BASE_URL.'snapshot';
-    
-    const NOTIFY = API_V1_BASE_URL.'notify';
+    const EMPTY = WEBHOOKS_BASE_URL . '/[indexID]/empty';
 
-    const DEPLOY = API_V1_BASE_URL.'deploy';
+    const HAS_DATA = WEBHOOKS_BASE_URL . '/[indexID]/has-data';
 
-    const HAS_DATA = API_V1_BASE_URL.'has-data';
+    const NOTIFY = WEBHOOKS_BASE_URL . '/[indexID]/notify';
+
+    const SNAPSHOT = WEBHOOKS_BASE_URL . '/[indexID]/snapshot';    
 }
