@@ -1,4 +1,5 @@
 <?php
+
 namespace OramaCloud;
 
 class Query {
@@ -29,11 +30,6 @@ class Query {
         return $this;
     }
 
-    public static function fromArray($array) {
-        extract($array);
-        return new Query($term, $mode);
-    }
-
     public function toArray() {
         return [
             'term' => $this->term,
@@ -43,5 +39,14 @@ class Query {
 
     public function toJson() {
         return json_encode($this->toArray());
+    }
+
+    public static function fromArray($array) {
+        $query = new Query();
+        $query
+            ->setTerm(isset($array['term']) ? $array['term'] : '')
+            ->setMode(isset($array['mode']) ? $array['mode'] : 'fulltext');
+
+        return $query;
     }
 }

@@ -17,6 +17,15 @@ class QueryTest extends TestCase {
         $this->assertEquals($mode, $query->getMode());
     }
 
+    public function testDefaultQueryParamsFromArray() {
+        $query = Query::fromArray([]);
+
+        $this->assertEquals($query->toArray(), [
+            'term' => '',
+            'mode' => 'fulltext'
+        ]);
+    }
+
     public function testQueryParamsFromArray() {
         $params = [
             'term' => 'mock-term',

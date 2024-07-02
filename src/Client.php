@@ -1,4 +1,5 @@
 <?php
+
 namespace OramaCloud;
 
 use GuzzleHttp\Client as HttpClient;
@@ -21,13 +22,12 @@ class Client {
 
     public function search(Query $query) {
         $endpoint = "{$this->endpoint}/search?api-key={$this->apiKey}";
-        $options = [
+        
+        $response = $this->http->request('POST', $endpoint, [
             'form_params' => [
                 'q' => $query->toJson()
             ]
-        ];
-        
-        $response = $this->http->request('POST', $endpoint, $options);
+        ]);
 
         return json_decode($response->getBody(), true);
     }
