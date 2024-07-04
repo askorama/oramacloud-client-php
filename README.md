@@ -14,7 +14,10 @@ composer require orama/oramacloud-client
 use OramaCloud\Client;
 use OramaCloud\Query;
 
-$client = new Client("<Your Orama Cloud Endpoint>", "<Your Orama Cloud API Key>");
+$client = new Client([
+    'api_key' => '<Your Orama Cloud API Key>',
+    'endpoint' => '<Your Orama Cloud Endpoint>'
+]);
 
 $results = $client->search(
     (new Query())
