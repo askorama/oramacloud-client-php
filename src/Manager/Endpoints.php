@@ -15,4 +15,6 @@ class Endpoints
     const NOTIFY = self::WEBHOOKS_BASE_URL . '/[indexID]/notify';
 
     const SNAPSHOT = self::WEBHOOKS_BASE_URL . '/[indexID]/snapshot';
+
+    const ORAMA_ANSWER_ENDPOINT = 'https://answer.api.orama.com';
 }

@@ -1,7 +1,7 @@
 <?php
 
-use OramaCloud\Query;
-use OramaCloud\QueryParams\Where;
+use OramaCloud\Client\Query;
+use OramaCloud\Client\QueryParams\Where;
 
 test('configure query params', function () {
     $term = 'mock-term';
@@ -15,7 +15,7 @@ test('configure query params', function () {
         ->where('category', 'eq', 'shoes');
 
     $result = $query->toArray();
-    
+
     $this->assertEquals($result['term'], 'red shoes');
     $this->assertEquals($result['mode'], 'fulltext');
     $this->assertEquals($result['where'], [
@@ -63,6 +63,6 @@ test('query params as json', function () {
     ];
 
     $query = Query::fromArray($params);
-    
+
     $this->assertEquals($params, json_decode($query->toJson(), true));
 });

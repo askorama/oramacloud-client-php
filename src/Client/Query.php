@@ -1,48 +1,55 @@
 <?php
 
-namespace OramaCloud;
+namespace OramaCloud\Client;
 
-use OramaCloud\QueryParams\Where;
+use OramaCloud\Client\QueryParams\Where;
 
-class Query {
-
+class Query
+{
     private $term;
     private $mode;
     private $limit;
     private $offset;
     private $where = [];
 
-    public function __construct($term = '', $mode = 'fulltext') {
+    public function __construct($term = '', $mode = 'fulltext')
+    {
         $this->term = $term;
         $this->mode = $mode;
     }
 
-    public function term($term) {
+    public function term($term)
+    {
         $this->term = $term;
         return $this;
     }
 
-    public function mode($mode) {
+    public function mode($mode)
+    {
         $this->mode = $mode;
         return $this;
     }
 
-    public function where($property, $operator, $value) {
+    public function where($property, $operator, $value)
+    {
         $this->where[] = new Where($property, $operator, $value);
         return $this;
     }
 
-    public function limit($limit) {
+    public function limit($limit)
+    {
         $this->limit = $limit;
         return $this;
     }
 
-    public function offset($offset) {
+    public function offset($offset)
+    {
         $this->offset = $offset;
         return $this;
     }
 
-    public function toArray() {
+    public function toArray()
+    {
         $array = [];
 
         if (!is_null($this->term)) {
@@ -72,16 +79,18 @@ class Query {
         return $array;
     }
 
-    public function toJson() {
+    public function toJson()
+    {
         return json_encode($this->toArray());
     }
 
-    public static function fromArray($array) {
+    public static function fromArray($array)
+    {
         $query = new Query();
-        
+
         $query->term(isset($array['term']) ? $array['term'] : '');
         $query->mode(isset($array['mode']) ? $array['mode'] : 'fulltext');
-        
+
         if (isset($array['where']) && !is_null($array['where'])) {
             foreach ($array['where'] as $property => $value) {
                 $query->where($property, key($value), $value[key($value)]);
