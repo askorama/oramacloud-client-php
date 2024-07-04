@@ -3,7 +3,6 @@
 namespace OramaCloud\Telemetry;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Promise\Promise;
 
 class Collector
 {
@@ -31,7 +30,7 @@ class Collector
 
   public static function create($config)
   {
-    $collector = new Collector($config['id'], $config['api_key']);
+    $collector = new Collector($config['id'], $config['api_key'], $config['flushInterval'], $config['flushSize']);
     $collector->start();
 
     return $collector;
@@ -41,9 +40,10 @@ class Collector
   {
     $this->data[] = $data;
 
-    if ($this->params != null && count($this->data) >= $this->config['flushSize']) {
-      $this->flush();
-    }
+    // if ($this->params != null && count($this->data) >= $this->config['flushSize']) {
+    //  $this->flush();
+    //}
+    $this->flush();
   }
 
   public function flush()

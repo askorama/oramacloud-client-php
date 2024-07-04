@@ -3,6 +3,8 @@
 namespace OramaCloud;
 
 use GuzzleHttp\Client as HttpClient;
+use GuzzleHttp\Exception\RequestException;
+use Psr\Http\Message\ResponseInterface;
 use OramaCloud\Client\Cache;
 use OramaCloud\Client\Query;
 use OramaCloud\Manager\Endpoints;
@@ -22,7 +24,7 @@ class Client
     {
         $params = $this->validate($params);
 
-        $this->id = uniqid('p', true);
+        $this->id = str_replace('.', '', uniqid('p', true));
         $this->http = new HttpClient();
         $this->apiKey = $params['api_key'];
         $this->endpoint = $params['endpoint'];
@@ -40,7 +42,7 @@ class Client
         }
 
         // Cache is enabled by default
-        if ($this->cache) {
+        if ($this->cache !== false) {
             $this->cache = new Cache();
         }
 
@@ -115,6 +117,41 @@ class Client
 
     private function init()
     {
-        //
+        $promise = $this->fetch('init', 'POST');
+        $promise->then(
+            function (ResponseInterface $response) {
+                if ($this->collector !== null) {
+                    $this->collector->setParams([
+                        'endpoint' => $response->collectUrl,
+                        'deploymentID' => $response->deploymentID,
+                        'index' => $response->index
+                    ]);
+                }
+            },
+            function (RequestException $e) {
+                throw new \RuntimeException('Failed to initialize client');
+            }
+        );
+    }
+
+    private function fetch($path, $method, $body = [])
+    {
+        $endpoint = "{$this->endpoint}/{$path}?api-key={$this->apiKey}";
+
+        $requestOptions = [
+            'headers' => [
+                'Content-Type' => 'application/x-www-form-urlencoded'
+            ]
+        ];
+
+        if ($method === 'POST' && $body !== []) {
+            $b = $body;
+            $b['version'] = 'php-sdk-1.0.0';
+            $b['id'] = $this->id;
+
+            $requestOptions['body'] = http_build_query($b);
+        }
+
+        return $this->http->requestAsync('POST', $endpoint, $requestOptions);
     }
 }
