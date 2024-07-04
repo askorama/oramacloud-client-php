@@ -16,18 +16,24 @@ use OramaCloud\Query;
 
 $client = new Client("<Your Orama Cloud Endpoint>", "<Your Orama Cloud API Key>");
 
-$result = $client->search(
+$results = $client->search(
     (new Query())
         ->term('red shoes')
         ->where('price', 'gt', 99.99)
-        ->where('category', 'eq', 'sport')
 );
 ```
 
 ## Advanced search
 
 ```php
+$query = (new Query())
+    ->term('red leather shoes')
+    ->where('price', 'lte', 9.99)
+    ->where('gender', 'eq', 'unisex')
+    ->limit(5)
+    ->offset(1);
 
+$results = $client->search($query);
 ```
 
 ## Run Tests
