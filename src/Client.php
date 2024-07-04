@@ -3,8 +3,6 @@
 namespace OramaCloud;
 
 use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\Exception\RequestException;
-use Psr\Http\Message\ResponseInterface;
 use OramaCloud\Client\Cache;
 use OramaCloud\Client\Query;
 use OramaCloud\Manager\Endpoints;
@@ -20,12 +18,12 @@ class Client
     private $collector;
     private $cache = true;
 
-    public function __construct(array $params)
+    public function __construct(array $params, HttpClient $http = null)
     {
         $params = $this->validate($params);
 
         $this->id = str_replace('.', '', uniqid('p', true));
-        $this->http = new HttpClient();
+        $this->http = is_null($http) ? new HttpClient() : $http;
         $this->apiKey = $params['api_key'];
         $this->endpoint = $params['endpoint'];
         $this->answersApiBaseURL = $params['answersApiBaseURL'];
@@ -117,21 +115,21 @@ class Client
 
     private function init()
     {
-        $promise = $this->fetch('init', 'POST');
-        $promise->then(
-            function (ResponseInterface $response) {
-                if ($this->collector !== null) {
-                    $this->collector->setParams([
-                        'endpoint' => $response->collectUrl,
-                        'deploymentID' => $response->deploymentID,
-                        'index' => $response->index
-                    ]);
-                }
-            },
-            function (RequestException $e) {
-                throw new \RuntimeException('Failed to initialize client');
-            }
-        );
+        $response = $this->fetch('init', 'POST');
+        $response = json_decode($response, true);
+
+        if (
+            $this->collector !== null &&
+            isset($response['collectUrl']) &&
+            isset($response['deploymentID']) &&
+            isset($response['index'])
+        ) {
+            $this->collector->setParams([
+                'endpoint' => $response['collectUrl'],
+                'deploymentID' => $response['deploymentID'],
+                'index' => $response['index']
+            ]);
+        }
     }
 
     private function fetch($path, $method, $body = [])
@@ -149,9 +147,11 @@ class Client
             $b['version'] = 'php-sdk-1.0.0';
             $b['id'] = $this->id;
 
-            $requestOptions['body'] = http_build_query($b);
+            $requestOptions['body'] = http_build_query($body);
         }
 
-        return $this->http->requestAsync('POST', $endpoint, $requestOptions);
+        $response = $this->http->request('POST', $endpoint, $requestOptions);
+
+        return $response->getBody();
     }
 }

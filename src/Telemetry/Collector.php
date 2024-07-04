@@ -78,7 +78,7 @@ class Collector
     $url = $this->params['endpoint'] . '?api-key=' . $this->config['api_key'];
 
     $this->client->requestAsync('POST', $url, [
-      'json' => $body
+      'form_params' => $body
     ]);
   }
 }
