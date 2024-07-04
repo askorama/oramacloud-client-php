@@ -8,9 +8,13 @@ const PUBLIC_API_KEY = 'P9buEfpy8rWvT265McikCG1tP4pT6cBg';
 
 test('basic fulltext search', function () {
     $client = new Client(API_ENDPOINT, PUBLIC_API_KEY);
-    $query = new Query('install sdk');
     
-    $result = $client->search($query);
+    $result = $client->search(
+        (new Query())
+            ->term('red shoes')
+            ->mode('fulltext')
+            ->limit(10)
+    );
     
     $this->assertArrayHasKey('hits', $result);
     $this->assertArrayHasKey('elapsed', $result);

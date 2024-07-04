@@ -2,45 +2,74 @@
 
 namespace OramaCloud;
 
+use OramaCloud\QueryParams\Where;
+
 class Query {
 
     private $term;
     private $mode;
-    private $limit = 5;
-    private $offset = 0;
+    private $limit;
+    private $offset;
+    private $where = [];
 
     public function __construct($term = '', $mode = 'fulltext') {
         $this->term = $term;
         $this->mode = $mode;
     }
 
-    public function setTerm($term) {
+    public function term($term) {
         $this->term = $term;
         return $this;
     }
 
-    public function setMode($mode) {
+    public function mode($mode) {
         $this->mode = $mode;
         return $this;
     }
 
-    public function setLimit($limit) {
+    public function where($property, $operator, $value) {
+        $this->where[] = new Where($property, $operator, $value);
+        return $this;
+    }
+
+    public function limit($limit) {
         $this->limit = $limit;
         return $this;
     }
 
-    public function setOffset($offset) {
+    public function offset($offset) {
         $this->offset = $offset;
         return $this;
     }
 
     public function toArray() {
-        return [
-            'term' => $this->term,
-            'mode' => $this->mode,
-            'limit' => $this->limit,
-            'offset' => $this->offset
-        ];
+        $array = [];
+
+        if (!is_null($this->term)) {
+            $array['term'] = $this->term;
+        }
+
+        if (!is_null($this->mode)) {
+            $array['mode'] = $this->mode;
+        }
+
+        if (!is_null($this->limit)) {
+            $array['limit'] = $this->limit;
+        }
+
+        if (!is_null($this->offset)) {
+            $array['offset'] = $this->offset;
+        }
+
+        if (isset($this->where) && is_array($this->where) && count($this->where) > 0) {
+            foreach ($this->where as $where) {
+                foreach ($where->toArray() as $key => $value) {
+                    $array['where'][$key] = $value;
+                }
+            }
+        }
+
+        return $array;
     }
 
     public function toJson() {
@@ -49,11 +78,23 @@ class Query {
 
     public static function fromArray($array) {
         $query = new Query();
-        $query
-            ->setTerm(isset($array['term']) ? $array['term'] : '')
-            ->setMode(isset($array['mode']) ? $array['mode'] : 'fulltext')
-            ->setLimit(isset($array['limit']) ? $array['limit'] : 5)
-            ->setOffset(isset($array['offset']) ? $array['offset'] : 0);
+        
+        $query->term(isset($array['term']) ? $array['term'] : '');
+        $query->mode(isset($array['mode']) ? $array['mode'] : 'fulltext');
+        
+        if (isset($array['where']) && !is_null($array['where'])) {
+            foreach ($array['where'] as $property => $value) {
+                $query->where($property, key($value), $value[key($value)]);
+            }
+        }
+
+        if (isset($array['limit']) && !is_null($array['limit'])) {
+            $query->limit($array['limit']);
+        }
+
+        if (isset($array['offset']) && !is_null($array['offset'])) {
+            $query->offset($array['offset']);
+        }
 
         return $query;
     }
