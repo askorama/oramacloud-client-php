@@ -1,12 +1,8 @@
 <?php
 
 use OramaCloud\Client\Query;
-use OramaCloud\Client\QueryParams\Where;
 
 test('configure query params', function () {
-    $term = 'mock-term';
-    $mode = 'mock-mode';
-
     $query = new Query();
     $query
         ->term('red shoes')
