@@ -2,6 +2,8 @@
 
 namespace OramaCloud\Client;
 
+use OramaCloud\Client\QueryParams\SortBy;
+use OramaCloud\Client\QueryParams\SortByOrder;
 use OramaCloud\Client\QueryParams\Where;
 
 class Query
@@ -10,6 +12,7 @@ class Query
     private $mode;
     private $limit;
     private $offset;
+    private $sortBy;
     private $where = [];
 
     public function __construct($term = '', $mode = 'fulltext')
@@ -30,19 +33,25 @@ class Query
         return $this;
     }
 
-    public function where($property, $operator, $value)
+    public function where(string $property, $operator, $value)
     {
         $this->where[] = new Where($property, $operator, $value);
         return $this;
     }
 
-    public function limit($limit)
+    public function sortBy(string $property, $order = SortByOrder::ASC)
+    {
+        $this->sortBy = new SortBy($property, $order);
+        return $this;
+    }
+
+    public function limit(int $limit)
     {
         $this->limit = $limit;
         return $this;
     }
 
-    public function offset($offset)
+    public function offset(int $offset)
     {
         $this->offset = $offset;
         return $this;
@@ -76,12 +85,11 @@ class Query
             }
         }
 
-        return $array;
-    }
+        if (!is_null($this->sortBy)) {
+            $array['sortBy'] = $this->sortBy->toArray();
+        }
 
-    public function toJson()
-    {
-        return json_encode($this->toArray());
+        return $array;
     }
 
     public static function fromArray($array)
@@ -97,6 +105,10 @@ class Query
             }
         }
 
+        if (isset($array['sortBy']) && !is_null($array['sortBy'])) {
+            $query->sortBy($array['sortBy']['property'], $array['sortBy']['order']);
+        }
+
         if (isset($array['limit']) && !is_null($array['limit'])) {
             $query->limit($array['limit']);
         }
@@ -106,5 +118,20 @@ class Query
         }
 
         return $query;
+    }
+
+    public function toJson()
+    {
+        return json_encode($this->toArray());
+    }
+
+    public static function fromJson($json)
+    {
+        return Query::fromArray(json_decode($json, true));
+    }
+
+    public function toQueryString()
+    {
+        return http_build_query($this->toArray());
     }
 }
