@@ -90,11 +90,11 @@ class Client
             isset($response['deploymentID']) &&
             isset($response['index'])
         ) {
-            $this->collector->setParams([
-                'endpoint' => $response['collectUrl'],
-                'deploymentID' => $response['deploymentID'],
-                'index' => $response['index']
-            ]);
+            $this->collector->setParams(
+                $response['collectUrl'],
+                $response['deploymentID'],
+                $response['index']
+            );
         }
     }
 

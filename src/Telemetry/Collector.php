@@ -3,6 +3,7 @@
 namespace OramaCloud\Telemetry;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Promise\PromiseInterface;
 
 class Collector
 {
@@ -21,9 +22,13 @@ class Collector
     ];
   }
 
-  public function setParams($params)
+  public function setParams($endpoint, $deploymentID, $indexID)
   {
-    $this->params = $params;
+    $this->params = [
+      'endpoint' => $endpoint,
+      'deploymentID' => $deploymentID,
+      'index' => $indexID
+    ];
   }
 
   public static function create($config, Client $http)
@@ -49,7 +54,7 @@ class Collector
   public function flush()
   {
     if ($this->params == null || count($this->data) === 0) {
-      return;
+      return null;
     }
 
     $data = $this->data;
@@ -65,7 +70,7 @@ class Collector
       'events' => $data
     ];
 
-    $this->sendBeacon($body);
+    return $this->sendBeacon($body);
   }
 
   private function start()
@@ -73,15 +78,15 @@ class Collector
     $this->flush();
   }
 
-  private function sendBeacon($body)
+  private function sendBeacon($body): PromiseInterface|null
   {
     if ($this->params == null || !isset($this->params['endpoint'])) {
-      return;
+      return null;
     }
 
     $url = $this->params['endpoint'] . '?api-key=' . $this->config['api_key'];
 
-    $this->client->requestAsync('POST', $url, [
+    return $this->client->requestAsync('POST', $url, [
       'form_params' => $body
     ]);
   }
