@@ -14,25 +14,23 @@ composer require orama/oramacloud-client
 
 ```php
 use OramaCloud\Client;
-use OramaCloud\Query;
+use OramaCloud\Client\Query;
 
 $client = new Client([
     'api_key' => '<Your Orama Cloud API Key>',
     'endpoint' => '<Your Orama Cloud Endpoint>'
 ]);
 
-$results = $client->search(
-    (new Query())
-        ->term('red shoes')
-        ->where('price', 'gt', 99.99)
-);
+$query = new Query('red shoes');
+$query->where('price', 'gt', 99.99);
+
+$results = $client->search($query);
 ```
 
 ## Advanced search
 
 ```php
-$query = (new Query())
-    ->term('red leather shoes')
+$query = (new Query('red leather shoes', 'fulltext'))
     ->where('price', 'lte', 9.99)
     ->where('gender', 'eq', 'unisex')
     ->limit(5)
