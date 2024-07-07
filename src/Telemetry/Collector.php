@@ -11,9 +11,9 @@ class Collector
   private $config;
   private $client;
 
-  public function __construct(string $id, string $apiKey)
+  public function __construct(string $id, string $apiKey, Client $http)
   {
-    $this->client = new Client();
+    $this->client = $http;
     $this->data = [];
     $this->config = [
       'id' => $id,
@@ -26,9 +26,13 @@ class Collector
     $this->params = $params;
   }
 
-  public static function create($config)
+  public static function create($config, Client $http)
   {
-    $collector = new Collector($config['id'], $config['api_key']);
+    if (!isset($config['id']) || !isset($config['api_key'])) {
+      throw new \InvalidArgumentException('The id and api_key parameters are required.');
+    }
+
+    $collector = new Collector($config['id'], $config['api_key'], $http);
 
     $collector->start();
 
@@ -71,6 +75,10 @@ class Collector
 
   private function sendBeacon($body)
   {
+    if ($this->params == null || !isset($this->params['endpoint'])) {
+      return;
+    }
+
     $url = $this->params['endpoint'] . '?api-key=' . $this->config['api_key'];
 
     $this->client->requestAsync('POST', $url, [
