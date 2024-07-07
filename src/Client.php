@@ -5,12 +5,13 @@ namespace OramaCloud;
 use GuzzleHttp\Client as HttpClient;
 use OramaCloud\Client\Query;
 use OramaCloud\Telemetry\Collector;
+use OramaCloud\Traits\GeneratesUniqueId;
 use OramaCloud\Traits\ValidatesParams;
-use Visus\Cuid2\Cuid2;
 
 class Client
 {
     use ValidatesParams;
+    use GeneratesUniqueId;
 
     private $answersApiBaseURL;
     private $apiKey;
@@ -28,7 +29,7 @@ class Client
             'answersApiBaseURL' => ['optional', 'string']
         ]);
 
-        $this->id = (new Cuid2())->toString();
+        $this->id = $this->generateUniqueId();
         $this->http = !is_null($http) ? $http : new HttpClient();
         $this->apiKey = $params['api_key'];
         $this->endpoint = $params['endpoint'];
@@ -72,11 +73,6 @@ class Client
         }
 
         return $results;
-    }
-
-    public function getCollector(): Collector|null
-    {
-        return $this->collector;
     }
 
     private function init()

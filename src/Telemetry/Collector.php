@@ -3,7 +3,6 @@
 namespace OramaCloud\Telemetry;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Promise\PromiseInterface;
 
 class Collector
 {
@@ -78,7 +77,7 @@ class Collector
     $this->flush();
   }
 
-  private function sendBeacon($body): PromiseInterface|null
+  private function sendBeacon($body)
   {
     if ($this->params == null || !isset($this->params['endpoint'])) {
       return null;
