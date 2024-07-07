@@ -1,5 +1,7 @@
 # OramaCloud Client PHP
 
+[![Tests](https://github.com/askorama/oramacloud-client-php/actions/workflows/tests.yml/badge.svg)](https://github.com/askorama/oramacloud-client-php/actions/workflows/tests.yml)
+
 OramaCloud PHP Client SDK
 
 ## Install
