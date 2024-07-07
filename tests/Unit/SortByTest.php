@@ -1,41 +1,48 @@
 <?php
 
+namespace Tests\Unit;
+
 use OramaCloud\Client\QueryParams\SortBy;
 use OramaCloud\Client\QueryParams\SortByOrder;
+use Tests\TestCase;
 
-describe('Sort By', function () {
-    it('should create a sort by object', function () {
+class SortByTest extends TestCase
+{
+    public function testCreateSortByObject()
+    {
         $sortBy = new SortBy('name', SortByOrder::ASC);
 
-        expect($sortBy->toArray())->toBe([
+        $this->assertEquals([
             'property' => 'name',
             'order' => 'ASC'
-        ]);
-    });
+        ], $sortBy->toArray());
+    }
 
-    it('should throw an exception when invalid order is passed', function () {
-        $closure = function () {
-            new SortBy('name', 'INVALID');
-        };
+    public function testThrowExceptionForInvalidOrder()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid $order parameter in SortBy');
 
-        expect($closure)->toThrow(new \InvalidArgumentException('Invalid $order parameter in SortBy'));
-    });
+        new SortBy('name', 'INVALID');
+    }
 
-    it('should create a sort by object with default order', function () {
+    public function testCreateSortByObjectWithDefaultOrder()
+    {
         $sortBy = new SortBy('metadata.title');
 
-        expect($sortBy->toArray())->toBe([
+        $this->assertEquals([
             'property' => 'metadata.title',
             'order' => 'ASC'
-        ]);
-    });
+        ], $sortBy->toArray());
+    }
 
-    it('should create a sort by object with DESC order', function () {
+    public function testCreateSortByObjectWithDESCOrder()
+    {
         $sortBy = new SortBy('name', SortByOrder::DESC);
 
-        expect($sortBy->toArray())->toBe([
+        $this->assertEquals([
             'property' => 'name',
             'order' => 'DESC'
-        ]);
-    });
-});
+        ], $sortBy->toArray());
+    }
+}

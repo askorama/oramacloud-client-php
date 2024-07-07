@@ -1,9 +1,14 @@
 <?php
 
-use OramaCloud\Client\Query;
+namespace Tests\Unit;
 
-describe('Query builder', function () {
-    it('should configure query params', function () {
+use OramaCloud\Client\Query;
+use Tests\TestCase;
+
+class QueryTest extends TestCase
+{
+    public function testQueryBuilder()
+    {
         $query = new Query();
         $query
             ->term('red shoes')
@@ -14,34 +19,36 @@ describe('Query builder', function () {
 
         $result = $query->toArray();
 
-        $this->assertEquals($result['term'], 'red shoes');
-        $this->assertEquals($result['mode'], 'fulltext');
-        $this->assertEquals($result['where'], [
+        $this->assertEquals('red shoes', $result['term']);
+        $this->assertEquals('fulltext', $result['mode']);
+        $this->assertEquals([
             'category' => [
                 'eq' => 'shoes'
             ],
             'price' => [
                 'gte' => 99.99
             ]
-        ]);
-        $this->assertEquals($result['sortBy'], [
+        ], $result['where']);
+        $this->assertEquals([
             'property' => 'price',
             'order' => 'DESC'
-        ]);
+        ], $result['sortBy']);
 
-        $this->assertEquals($query->toJson(), json_encode($result));
-    });
+        $this->assertEquals(json_encode($result), $query->toJson());
+    }
 
-    it('defaults query params from array', function () {
+    public function testDefaultQueryParams()
+    {
         $query = Query::fromArray([]);
 
-        $this->assertEquals($query->toArray(), [
+        $this->assertEquals([
             'term' => '',
             'mode' => 'fulltext',
-        ]);
-    });
+        ], $query->toArray());
+    }
 
-    it('accepts query params from array', function () {
+    public function testQueryParamsFromArray()
+    {
         $params = [
             'term' => 'mock-term',
             'mode' => 'mock-mode',
@@ -59,5 +66,5 @@ describe('Query builder', function () {
 
         $this->assertEquals($params, $query->toArray());
         $this->assertEquals($params, json_decode($query->toJson(), true));
-    });
-});
+    }
+}

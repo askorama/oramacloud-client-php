@@ -1,98 +1,108 @@
 <?php
 
+namespace Tests\Unit;
+
 use OramaCloud\Client\QueryParams\Where;
 use OramaCloud\Client\QueryParams\WhereOperator;
+use Tests\TestCase;
 
-describe('Where filter', function () {
-    it('should create a where filter object', function () {
+class WhereTest extends TestCase
+{
+    public function testCreateWhereFilterObject()
+    {
         $where = new Where('name', WhereOperator::EQ, 'mock-expected-value');
 
-        expect($where->toArray())->toBe([
+        $this->assertEquals([
             'name' => [
                 'eq' => 'mock-expected-value'
             ]
-        ]);
-    });
+        ], $where->toArray());
+    }
 
-    it('should throw an exception when invalid operator is passed', function () {
-        $closure = function () {
-            new Where('name', 'INVALID', 'mock-expected-value');
-        };
+    public function testThrowExceptionWhenInvalidOperatorIsPassed()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid operator INVALID');
 
-        expect($closure)->toThrow(new \InvalidArgumentException('Invalid operator INVALID'));
-    });
+        new Where('name', 'INVALID', 'mock-expected-value');
+    }
 
-    it('should throw an exception when value is not an array for BETWEEN operator', function () {
-        $closure = function () {
-            new Where('age', WhereOperator::BETWEEN, 20);
-        };
+    public function testThrowExceptionWhenValueIsNotAnArrayForBetweenOperator()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Where $value parameter must be an array');
 
-        expect($closure)->toThrow(new \InvalidArgumentException('Where $value parameter must be an array'));
-    });
+        new Where('age', WhereOperator::BETWEEN, 20);
+    }
 
-    it('should throw an exception when value is not an array for IN operator', function () {
-        $closure = function () {
-            new Where('age', WhereOperator::IN, 20);
-        };
+    public function testThrowExceptionWhenValueIsNotAnArrayForInOperator()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Where $value parameter must be an array');
 
-        expect($closure)->toThrow(new \InvalidArgumentException('Where $value parameter must be an array'));
-    });
+        new Where('age', WhereOperator::IN, 20);
+    }
 
-    it('should throw an exception when value is not an array for NIN operator', function () {
-        $closure = function () {
-            new Where('age', WhereOperator::NIN, 20);
-        };
+    public function testThrowExceptionWhenValueIsNotAnArrayForNinOperator()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Where $value parameter must be an array');
 
-        expect($closure)->toThrow(new \InvalidArgumentException('Where $value parameter must be an array'));
-    });
+        new Where('age', WhereOperator::NIN, 20);
+    }
 
-    it('should return the expected array for BETWEEN operator', function () {
+    public function testReturnExpectedArrayForBetweenOperator()
+    {
         $where = new Where('age', WhereOperator::BETWEEN, [20, 30]);
 
-        expect($where->toArray())->toBe([
+        $this->assertEquals([
             'age' => [
                 'between' => [20, 30]
             ]
-        ]);
-    });
+        ], $where->toArray());
+    }
 
-    it('should return the expected array for IN operator', function () {
+    public function testReturnExpectedArrayForInOperator()
+    {
         $where = new Where('years', WhereOperator::IN, [1984, 1994, 2004]);
 
-        expect($where->toArray())->toBe([
+        $this->assertEquals([
             'years' => [
                 'in' => [1984, 1994, 2004]
             ]
-        ]);
-    });
+        ], $where->toArray());
+    }
 
-    it('should return the expected array for NIN operator', function () {
+    public function testReturnExpectedArrayForNinOperator()
+    {
         $where = new Where('age', WhereOperator::NIN, [20, 30]);
 
-        expect($where->toArray())->toBe([
+        $this->assertEquals([
             'age' => [
                 'nin' => [20, 30]
             ]
-        ]);
-    });
+        ], $where->toArray());
+    }
 
-    it('should return the expected array for GT operator', function () {
+    public function testReturnExpectedArrayForGtOperator()
+    {
         $where = new Where('age', WhereOperator::GT, 20);
 
-        expect($where->toArray())->toBe([
+        $this->assertEquals([
             'age' => [
                 'gt' => 20
             ]
-        ]);
-    });
+        ], $where->toArray());
+    }
 
-    it('should return the expected array for EQ operator', function () {
+    public function testReturnExpectedArrayForEqOperator()
+    {
         $where = new Where('year', WhereOperator::EQ, 2024);
 
-        expect($where->toArray())->toBe([
+        $this->assertEquals([
             'year' => [
                 'eq' => 2024
             ]
-        ]);
-    });
-});
+        ], $where->toArray());
+    }
+}
