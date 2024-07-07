@@ -3,7 +3,6 @@
 namespace OramaCloud;
 
 use GuzzleHttp\Client as HttpClient;
-use OramaCloud\Client\Cache;
 use OramaCloud\Client\Query;
 use OramaCloud\Telemetry\Collector;
 use OramaCloud\Traits\ValidatesParams;
@@ -19,16 +18,14 @@ class Client
     private $http;
     private $id;
     private $collector;
-    private $cache = true;
 
     public function __construct(array $params, HttpClient $http = null)
     {
         $params = $this->validate($params, [
             'api_key' => ['required', 'string'],
             'endpoint' => ['required', 'string'],
-            'telemetry' => ['optional'],
-            'answersApiBaseURL' => ['optional', 'string'],
-            'cache' => ['optional', 'boolean']
+            'telemetry' => ['optional', 'boolean'],
+            'answersApiBaseURL' => ['optional', 'string']
         ]);
 
         $this->id = (new Cuid2())->toString();
@@ -36,30 +33,13 @@ class Client
         $this->apiKey = $params['api_key'];
         $this->endpoint = $params['endpoint'];
         $this->answersApiBaseURL = $params['answersApiBaseURL'];
-        $this->cache = $params['cache'];
 
         // Telemetry is enabled by default
-        if (isset($params['telemetry']) && $params['telemetry'] !== false) {
-            $this->validate($params, [
-                'telemetry' => ['array']
-            ]);
-
-            $this->validate($params['telemetry'], [
-                'flushInterval' => ['optional', 'integer'],
-                'flushSize' => ['optional', 'integer']
-            ]);
-
+        if ($params['telemetry'] !== false) {
             $this->collector = Collector::create([
                 'id' => $this->id,
-                'api_key' => $this->apiKey,
-                'flushInterval' => $params['telemetry']['flushInterval'] ?? 5000,
-                'flushSize' => $params['telemetry']['flushSize'] ?? 25
-            ]);
-        }
-
-        // Cache is enabled by default
-        if ($this->cache !== false) {
-            $this->cache = new Cache();
+                'api_key' => $this->apiKey
+            ], $this->http);
         }
 
         $this->init();
@@ -67,44 +47,36 @@ class Client
 
     public function search(Query $query)
     {
-        $cacheKey = "search-" . $query->toJson();
+        $startTime = microtime(true);
+        $endpoint = "{$this->endpoint}/search?api-key={$this->apiKey}";
+        $response = $this->http->request('POST', $endpoint, [
+            'form_params' => [
+                'q' => $query->toJson()
+            ]
+        ]);
 
-        if ($this->cache && $this->cache->has($cacheKey)) {
-            $roundTripTime = 0;
-            $searchResults = $this->cache->get($cacheKey);
-            $cached = true;
-        } else {
-            $startTime = microtime(true);
-            $endpoint = "{$this->endpoint}/search?api-key={$this->apiKey}";
-            $response = $this->http->request('POST', $endpoint, [
-                'form_params' => [
-                    'q' => $query->toJson()
-                ]
-            ]);
+        $results = json_decode($response->getBody()->getContents(), true);
 
-            $searchResults = $response->getBody();
-
-            $endTime = microtime(true);
-            $roundTripTime = ($endTime - $startTime) * 1000;
-            $cached = false;
-
-            if ($this->cache !== false) {
-                $this->cache->set($cacheKey, $searchResults);
-            }
-        }
+        $endTime = microtime(true);
+        $roundTripTime = ($endTime - $startTime) * 1000;
 
         if ($this->collector !== null) {
             $this->collector->add([
                 'rawSearchString' => $query->toArray()['term'],
-                'resultsCount' => $searchResults->hits ?? 0,
+                'resultsCount' => $results['count'] ?? 0,
                 'roundTripTime' => $roundTripTime,
                 'query' => $query->toJson(),
-                'cached' => $cached,
+                'cached' => false,
                 'searchedAt' => time()
             ]);
         }
 
-        return json_decode($searchResults, true);
+        return $results;
+    }
+
+    public function getCollector(): Collector|null
+    {
+        return $this->collector;
     }
 
     private function init()
