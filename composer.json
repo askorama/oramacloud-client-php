@@ -1,6 +1,6 @@
 {
     "name": "orama/oramacloud-client-php",
-    "description": "Orama SDK for PHP",
+    "description": "Orama Cloud SDK",
     "autoload": {
         "psr-4": {
             "OramaCloud\\": "src/"
