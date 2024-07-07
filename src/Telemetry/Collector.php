@@ -11,15 +11,13 @@ class Collector
   private $config;
   private $client;
 
-  public function __construct($id, $apiKey, $flushInterval = 5000, $flushSize = 25)
+  public function __construct(string $id, string $apiKey)
   {
     $this->client = new Client();
     $this->data = [];
     $this->config = [
       'id' => $id,
-      'api_key' => $apiKey,
-      'flushInterval' => $flushInterval,
-      'flushSize' => $flushSize
+      'api_key' => $apiKey
     ];
   }
 
@@ -30,7 +28,8 @@ class Collector
 
   public static function create($config)
   {
-    $collector = new Collector($config['id'], $config['api_key'], $config['flushInterval'], $config['flushSize']);
+    $collector = new Collector($config['id'], $config['api_key']);
+
     $collector->start();
 
     return $collector;
@@ -40,9 +39,6 @@ class Collector
   {
     $this->data[] = $data;
 
-    // if ($this->params != null && count($this->data) >= $this->config['flushSize']) {
-    //  $this->flush();
-    //}
     $this->flush();
   }
 
