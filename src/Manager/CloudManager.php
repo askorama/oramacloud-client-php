@@ -11,15 +11,10 @@ class CloudManager
     private $apiKey;
     private $http;
 
-    public function __construct($apiKey)
+    public function __construct($apiKey, $http = null)
     {
         $this->apiKey = $apiKey;
-        $this->http = new HttpClient();
-    }
-
-    public function index(string $indexId): IndexManager
-    {
-        return new IndexManager($indexId, $this);
+        $this->http = is_null($http) ? new HttpClient() : $http;
     }
 
     public function setIndexId(string $id): void
@@ -29,6 +24,10 @@ class CloudManager
 
     public function callIndexWebhook(string $endpoint, $payload = null)
     {
+        if (!$this->indexId) {
+            throw new \Exception('Index ID is not set');
+        }
+
         $config = [
             'headers' => [
                 'Content-Type' => 'application/json',

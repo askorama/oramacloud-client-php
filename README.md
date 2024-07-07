@@ -41,6 +41,34 @@ $query = (new Query())
 $results = $client->search($query);
 ```
 
+## Managing your index
+
+```php
+use OramaCloud\Manager\CloudManager;
+use OramaCloud\Manager\IndexManager;
+
+$apiKey = 'HDks8Hkao82-ha9daj';
+$manager = new CloudManager($apiKey);
+
+$indexId = 'h7asdjk9d12kdlofabsha123';
+$index = new IndexManager($indexId, $manager);
+
+// Empty data
+$index->empty();
+
+// Insert records
+$index->insert([ 'id' => 1, 'name' => 'John Doe', 'age' => 20 ]);
+
+// Update record
+$index->update([ 'id' => 1, 'name' => 'Jane Doe', 'age' => 30 ]);
+
+// Delete record
+$index->delete([ 'id' => 1 ]);
+
+// Trigger deployment
+$index->deploy();
+```
+
 ## Run Tests
 
 ```sh
