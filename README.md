@@ -33,6 +33,7 @@ $results = $client->search($query);
 $query = (new Query('red leather shoes', 'fulltext'))
     ->where('price', 'lte', 9.99)
     ->where('gender', 'eq', 'unisex')
+    ->sortBy('price' 'desc')
     ->limit(5)
     ->offset(1);
 
