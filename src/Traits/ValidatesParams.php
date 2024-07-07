@@ -7,7 +7,7 @@ trait ValidatesParams
     public function validate(array $params, array $rules = [])
     {
         foreach ($rules as $key => $rules) {
-            $value = $params[$key] ?? null;
+            $value = isset($params[$key]) ? $params[$key] : null;
 
             foreach ($rules as $rule) {
                 if (in_array('optional', $rules) && is_null($value)) {
@@ -21,6 +21,8 @@ trait ValidatesParams
                     throw new \InvalidArgumentException("The $rule validation rule is not supported.");
                 }
             }
+
+            $params[$key] = $value;
         }
 
         return $params;

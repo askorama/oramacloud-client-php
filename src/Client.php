@@ -26,7 +26,7 @@ class Client
         $params = $this->validate($params, [
             'api_key' => ['required', 'string'],
             'endpoint' => ['required', 'string'],
-            'telemetry' => ['optional', 'array'],
+            'telemetry' => ['optional'],
             'answersApiBaseURL' => ['optional', 'string'],
             'cache' => ['optional', 'boolean']
         ]);
@@ -39,7 +39,16 @@ class Client
         $this->cache = $params['cache'];
 
         // Telemetry is enabled by default
-        if ($params['telemetry'] !== false) {
+        if (isset($params['telemetry']) && $params['telemetry'] !== false) {
+            $this->validate($params, [
+                'telemetry' => ['array']
+            ]);
+
+            $this->validate($params['telemetry'], [
+                'flushInterval' => ['optional', 'integer'],
+                'flushSize' => ['optional', 'integer']
+            ]);
+
             $this->collector = Collector::create([
                 'id' => $this->id,
                 'api_key' => $this->apiKey,
