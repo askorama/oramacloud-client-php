@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0866fa4cfaa04f2625e5042cc59ef9d9",
+    "content-hash": "d05ade83fd7868d4c679a2b47cf2ce0a",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -601,6 +601,64 @@
                 }
             ],
             "time": "2024-04-18T09:32:20+00:00"
+        },
+        {
+            "name": "visus/cuid2",
+            "version": "4.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/visus-io/php-cuid2.git",
+                "reference": "17c9b3098d556bb2556a084c948211333cc19c79"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/visus-io/php-cuid2/zipball/17c9b3098d556bb2556a084c948211333cc19c79",
+                "reference": "17c9b3098d556bb2556a084c948211333cc19c79",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "ergebnis/composer-normalize": "^2.29",
+                "ext-ctype": "*",
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpunit": "^10.0",
+                "squizlabs/php_codesniffer": "^3.7",
+                "vimeo/psalm": "^5.4"
+            },
+            "suggest": {
+                "ext-gmp": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/compat.php"
+                ],
+                "psr-4": {
+                    "Visus\\Cuid2\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alan Brault",
+                    "email": "alan.brault@visus.io"
+                }
+            ],
+            "description": "A PHP library for generating collision-resistant ids (CUIDs).",
+            "keywords": [
+                "cuid",
+                "identifier"
+            ],
+            "support": {
+                "issues": "https://github.com/visus-io/php-cuid2/issues",
+                "source": "https://github.com/visus-io/php-cuid2/tree/4.1.0"
+            },
+            "time": "2024-05-14T13:23:35+00:00"
         }
     ],
     "packages-dev": [

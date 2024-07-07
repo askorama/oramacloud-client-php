@@ -5,11 +5,14 @@ namespace OramaCloud;
 use GuzzleHttp\Client as HttpClient;
 use OramaCloud\Client\Cache;
 use OramaCloud\Client\Query;
-use OramaCloud\Manager\Endpoints;
 use OramaCloud\Telemetry\Collector;
+use OramaCloud\Traits\ValidatesParams;
+use Visus\Cuid2\Cuid2;
 
 class Client
 {
+    use ValidatesParams;
+
     private $answersApiBaseURL;
     private $apiKey;
     private $endpoint;
@@ -20,10 +23,16 @@ class Client
 
     public function __construct(array $params, HttpClient $http = null)
     {
-        $params = $this->validate($params);
+        $params = $this->validate($params, [
+            'api_key' => ['required', 'string'],
+            'endpoint' => ['required', 'string'],
+            'telemetry' => ['optional', 'array'],
+            'answersApiBaseURL' => ['optional', 'string'],
+            'cache' => ['optional', 'boolean']
+        ]);
 
-        $this->id = str_replace('.', '', uniqid('p', true));
-        $this->http = is_null($http) ? new HttpClient() : $http;
+        $this->id = (new Cuid2())->toString();
+        $this->http = !is_null($http) ? $http : new HttpClient();
         $this->apiKey = $params['api_key'];
         $this->endpoint = $params['endpoint'];
         $this->answersApiBaseURL = $params['answersApiBaseURL'];
@@ -85,32 +94,6 @@ class Client
         }
 
         return json_decode($searchResults, true);
-    }
-
-    private function validate($params)
-    {
-        if (empty($params['api_key'])) {
-            throw new \InvalidArgumentException('API key is required');
-        }
-
-        if (empty($params['endpoint'])) {
-            throw new \InvalidArgumentException('Endpoint is required');
-        }
-
-        if (isset($params['telemetry']) && $params['telemetry'] !== false && !is_array($params['telemetry'])) {
-            throw new \InvalidArgumentException('Telemetry must be an array');
-        }
-
-        $params['telemetry'] = isset($params['telemetry']) ? $params['telemetry'] : [
-            'flushInterval' => 5000,
-            'flushSize' => 25
-        ];
-
-        $params['answersApiBaseURL'] = isset($params['answersApiBaseURL']) ? $params['answersApiBaseURL'] : Endpoints::ORAMA_ANSWER_ENDPOINT;
-
-        $params['cache'] = isset($params['cache']) ? $params['cache'] : true;
-
-        return $params;
     }
 
     private function init()
