@@ -88,7 +88,9 @@ class Client
             $roundTripTime = ($endTime - $startTime) * 1000;
             $cached = false;
 
-            $this->cache->set($cacheKey, $searchResults);
+            if ($this->cache !== false) {
+                $this->cache->set($cacheKey, $searchResults);
+            }
         }
 
         if ($this->collector !== null) {
