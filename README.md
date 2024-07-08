@@ -56,13 +56,16 @@ $index = new IndexManager($indexId, $manager);
 $index->empty();
 
 // Insert records
-$index->insert([ 'id' => 1, 'name' => 'John Doe', 'age' => 20 ]);
+$index->insert([
+    ['id' => 1, 'name' => 'John Doe', 'age' => 20 ],
+    ['id' => 2, 'name' => 'Mario Rossi', 'age' => 25 ]
+]);
 
 // Update record
-$index->update([ 'id' => 1, 'name' => 'Jane Doe', 'age' => 30 ]);
+$index->update([[ 'id' => 1, 'name' => 'Jane Doe', 'age' => 30 ]]);
 
 // Delete record
-$index->delete([ 'id' => 1 ]);
+$index->delete([[ 'id' => 1 ]]);
 
 // Trigger deployment
 $index->deploy();
