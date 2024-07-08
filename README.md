@@ -46,10 +46,9 @@ $results = $client->search($query);
 use OramaCloud\Manager\CloudManager;
 use OramaCloud\Manager\IndexManager;
 
-$apiKey = 'HDks8Hkao82-ha9daj';
-$manager = new CloudManager($apiKey);
+$manager = new CloudManager("<Your Orama Cloud Private API Key>");
 
-$indexId = 'h7asdjk9d12kdlofabsha123';
+$indexId = '<Index-ID>';
 $index = new IndexManager($indexId, $manager);
 
 // Empty data
