@@ -30,6 +30,7 @@ $results = $client->search($query);
 ## Advanced search
 
 ```php
+use OramaCloud\Client\Query;
 use OramaCloud\Client\QueryParams/WhereOperator;
 use OramaCloud\Client\QueryParams/SortByOrder;
 
