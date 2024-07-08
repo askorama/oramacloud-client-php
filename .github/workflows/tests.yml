@@ -39,13 +39,4 @@ jobs:
           composer install --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Execute tests
-        env:
-          XDEBUG_MODE: coverage
-        run: ./vendor/bin/phpunit tests --coverage-xml coverage/xml
-
-      - name: Generate Coverage Badge
-        uses: timkrase/phpunit-coverage-badge@v1.2.1
-        with:
-          coverage_badge_path: ".github/badge-coverage.svg"
-          push_badge: true
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        run: ./vendor/bin/phpunit tests
