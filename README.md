@@ -61,10 +61,10 @@ $index->insert([
     ['id' => 2, 'name' => 'Mario Rossi', 'age' => 25 ]
 ]);
 
-// Update record
+// Update records
 $index->update([[ 'id' => 1, 'name' => 'Jane Doe', 'age' => 30 ]]);
 
-// Delete record
+// Delete records
 $index->delete([[ 'id' => 1 ]]);
 
 // Trigger deployment
