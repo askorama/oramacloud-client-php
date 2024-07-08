@@ -49,8 +49,7 @@ class IndexManager
 
     public function hasPendingOperations()
     {
-        $response = $this->callIndexWebhook(Endpoints::HAS_DATA);
-        return property_exists($response, 'hasData') ? $response->hasData : false;
+        return $this->callIndexWebhook(Endpoints::HAS_DATA);
     }
 
     private function checkIndexID()
@@ -60,7 +59,7 @@ class IndexManager
         }
     }
 
-    private function callIndexWebhook($endpoint, $payload = [])
+    private function callIndexWebhook($endpoint, $payload = null)
     {
         $this->checkIndexID();
 

@@ -35,7 +35,7 @@ class CloudManager
             ]
         ];
 
-        if ($payload) {
+        if (!is_null($payload)) {
             $config['body'] = json_encode($payload);
         }
 

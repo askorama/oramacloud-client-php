@@ -48,12 +48,12 @@ class IndexManagerTest extends TestCase
         $lastRequest = end($this->capturedRequests);
         $this->assertEquals('POST', $lastRequest->getMethod());
         $this->assertEquals('/api/v1/webhooks/mock-index/snapshot', $lastRequest->getUri()->getPath());
-        $this->assertNull(json_decode($lastRequest->getBody()->getContents(), true));
+        $this->assertEquals([], json_decode($lastRequest->getBody()->getContents(), true));
     }
 
     public function testShouldInsertADocument()
     {
-        $data = ['id' => 1, 'name' => 'John Doe'];
+        $data = [['id' => 1, 'name' => 'John Doe']];
         // Insert document
         $this->index->insert($data);
         $lastRequest = end($this->capturedRequests);
@@ -64,7 +64,7 @@ class IndexManagerTest extends TestCase
 
     public function testShouldUpdateADocument()
     {
-        $data = ['id' => 1, 'name' => 'Jane Doe'];
+        $data = [['id' => 1, 'name' => 'Jane Doe']];
         // Update document
         $this->index->update($data);
         $lastRequest = end($this->capturedRequests);
@@ -76,16 +76,16 @@ class IndexManagerTest extends TestCase
     public function testShouldDeleteADocument()
     {
         // Delete index
-        $this->index->delete(['id' => 1]);
+        $this->index->delete([['id' => 1]]);
         $lastRequest = end($this->capturedRequests);
         $this->assertEquals('POST', $lastRequest->getMethod());
         $this->assertEquals('/api/v1/webhooks/mock-index/notify', $lastRequest->getUri()->getPath());
-        $this->assertEquals(['remove' => ['id' => 1]], json_decode($lastRequest->getBody()->getContents(), true));
+        $this->assertEquals(['remove' => [['id' => 1]]], json_decode($lastRequest->getBody()->getContents(), true));
     }
 
     public function testShouldSnapshotTheIndex()
     {
-        $data = ['id' => 1, 'name' => 'John Doe'];
+        $data = [['id' => 1, 'name' => 'John Doe']];
         // Snapshot index
         $this->index->snapshot($data);
         $lastRequest = end($this->capturedRequests);
