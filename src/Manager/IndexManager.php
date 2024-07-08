@@ -9,12 +9,10 @@ class IndexManager
     private $manager;
     private $indexId = null;
 
-    public function __construct($indexID, CloudManager $manager)
+    public function __construct($indexID, $manager)
     {
-        $this->manager = $manager;
         $this->indexId = $indexID;
-
-        $this->manager->setIndexId($indexID);
+        $this->init($manager);
     }
 
     public function empty()
@@ -64,5 +62,18 @@ class IndexManager
         $this->checkIndexID();
 
         return $this->manager->callIndexWebhook($endpoint, $payload);
+    }
+
+    private function init($manager)
+    {
+        if ($manager instanceof CloudManager) {
+            $this->manager = $manager;
+        } else if ($manager instanceof string) {
+            $this->manager = new CloudManager($manager);
+        } else {
+            throw new \Exception('Invalid manager parameter. It should be an instance of CloudManager or an API key string.');
+        }
+
+        $this->manager->setIndexId($this->indexId);
     }
 }
