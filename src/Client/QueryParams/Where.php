@@ -4,7 +4,6 @@ namespace OramaCloud\Client\QueryParams;
 
 class Where
 {
-
     private $property;
     private $operator;
     private $value;

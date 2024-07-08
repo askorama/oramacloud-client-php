@@ -30,10 +30,13 @@ $results = $client->search($query);
 ## Advanced search
 
 ```php
-$query = (new Query('red leather shoes', 'fulltext'))
-    ->where('price', 'lte', 9.99)
-    ->where('gender', 'eq', 'unisex')
-    ->sortBy('price' 'desc')
+use OramaCloud\Client\QueryParams/WhereOperator;
+use OramaCloud\Client\QueryParams/SortByOrder;
+
+$query = (new Query('red shoes', 'fulltext'))
+    ->where('price', WhereOperator::LTE, 9.99)
+    ->where('gender', WhereOperator::EQ, 'unisex')
+    ->sortBy('price' SortByOrder::DESC)
     ->limit(5)
     ->offset(1);
 
