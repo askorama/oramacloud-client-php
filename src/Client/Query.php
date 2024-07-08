@@ -21,14 +21,18 @@ class Query
         $this->mode = $mode;
     }
 
-    public function term($term)
+    public function term(string $term)
     {
         $this->term = $term;
         return $this;
     }
 
-    public function mode($mode)
+    public function mode(string $mode)
     {
+        if (!in_array($mode, ['fulltext', 'vector', 'hybrid'])) {
+            throw new QueryException('Invalid search mode. Must be one of: fulltext, vector, hybrid.');
+        }
+
         $this->mode = $mode;
         return $this;
     }

@@ -51,7 +51,7 @@ class QueryTest extends TestCase
     {
         $params = [
             'term' => 'mock-term',
-            'mode' => 'mock-mode',
+            'mode' => 'vector',
             'where' => [
                 'foo' => [
                     'eq' => 99

@@ -15,35 +15,42 @@ class ClientTest extends TestCase
     const API_ENDPOINT = 'mock-endpoint';
     const PUBLIC_API_KEY = 'mock-api-key';
 
-    public function testBasicFulltextSearch()
+    protected $capturedRequests;
+    protected $httpClient;
+
+    protected function setUp(): void
     {
-        // Create a mock handler and queue a response.
-        $mock = new MockHandler([
-            // initial request to get the collect URL
-            new Response(200, [], json_encode([
-                'collectUrl' => 'mock-url',
-                'deploymentID' => 'mock-deployment-id',
-                'index' => 'mock-index',
-            ])),
+        // Reset capturedRequests before each test
+        $this->capturedRequests = [];
+
+        // Middleware to capture requests
+        $captureMiddleware = function ($handler) {
+            return function ($request, $options) use ($handler) {
+                $this->capturedRequests[] = $request;
+                return $handler($request, $options);
+            };
+        };
+
+        $mockResponse = new MockHandler([
             // search request
             new Response(200, [], json_encode([
                 'hits' => [['id' => 2]],
                 'elapsed' => 0.2,
                 'count' => 1,
-            ])),
-            // telemetry data collection
-            new Response(200, [], json_encode([
-                'message' => 'Telemetry data collected successfully',
-            ])),
+            ]))
         ]);
 
-        $handlerStack = HandlerStack::create($mock);
-        $mockClient = new GuzzleClient(['handler' => $handlerStack]);
+        $handlerStack = HandlerStack::create($mockResponse);
+        $handlerStack->push($captureMiddleware, 'capture_middleware');
+        $this->httpClient = new GuzzleClient(['handler' => $handlerStack]);
+    }
 
+    public function testBasicFulltextSearch()
+    {
         $client = new Client([
             'api_key' => self::PUBLIC_API_KEY,
             'endpoint' => self::API_ENDPOINT,
-        ], $mockClient);
+        ], $this->httpClient);
 
         $result = $client->search(
             (new Query())
@@ -58,5 +65,9 @@ class ClientTest extends TestCase
 
         $this->assertGreaterThan(0, $result['count']);
         $this->assertLessThanOrEqual(10, count($result['hits']));
+
+        $lastRequest = end($this->capturedRequests);
+        $this->assertEquals('POST', $lastRequest->getMethod());
+        $this->assertEquals(self::API_ENDPOINT . '/search', $lastRequest->getUri()->getPath());
     }
 }
