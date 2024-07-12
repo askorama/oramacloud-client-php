@@ -18,6 +18,7 @@ class Client
     private $http;
     private $id;
     private $collector;
+    private $headers;
 
     public function __construct(array $params, HttpClient $http = null)
     {
@@ -30,14 +31,21 @@ class Client
         $this->http = !is_null($http) ? $http : new HttpClient();
         $this->apiKey = $params['api_key'];
         $this->endpoint = $params['endpoint'];
+
+        $this->headers = (isset($_SERVER['HTTP_USER_AGENT'])) ? [
+            'User-Agent' => $_SERVER['HTTP_USER_AGENT']
+        ] : [];
     }
 
     public function search(Query $query)
     {
         $endpoint = "{$this->endpoint}/search?api-key={$this->apiKey}";
         $response = $this->http->request('POST', $endpoint, [
+            'headers' => $this->headers,
             'form_params' => [
-                'q' => $query->toJson()
+                'q' => $query->toJson(),
+                'version' => 'php 1.0.0',
+                'id' => $this->id
             ]
         ]);
 
