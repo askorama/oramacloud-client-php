@@ -1,6 +1,7 @@
 {
     "name": "oramacloud/client",
     "description": "Orama Cloud SDK",
+    "license": "Apache-2.0",
     "autoload": {
         "psr-4": {
             "OramaCloud\\": "src/"
