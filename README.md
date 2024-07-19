@@ -88,3 +88,5 @@ $index->deploy();
 ```sh
 composer test
 ```
+### License
+Apache-2.0 license. Please see [License File](LICENSE.md) for more information.
