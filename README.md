@@ -10,6 +10,10 @@ OramaCloud PHP Client SDK
 composer require orama/oramacloud-client
 ```
 
+#### Compatibility
+
+PHP: 7.3 or later
+
 ## Integrating with Orama Cloud
 
 ```php
@@ -47,7 +51,6 @@ $results = $client->search($query);
 ## Managing your index
 
 ```php
-use OramaCloud\Manager\CloudManager;
 use OramaCloud\Manager\IndexManager;
 
 $index = new IndexManager('<Your Index-ID>', '<Your Private API Key>');
