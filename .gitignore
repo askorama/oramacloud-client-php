@@ -11,3 +11,5 @@ yarn-error.log
 /.vscode
 /vendor
 composer.lock
+demo/search.php
+demo/deploy.php

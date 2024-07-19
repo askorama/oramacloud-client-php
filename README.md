@@ -57,15 +57,16 @@ $index->empty();
 
 // Insert records
 $index->insert([
-    ['id' => 1, 'name' => 'John Doe', 'age' => 20 ],
-    ['id' => 2, 'name' => 'Mario Rossi', 'age' => 25 ]
+    ['id' => '1', 'name' => 'John Doe', 'age' => 20 ],
+    ['id' => '2', 'name' => 'Mario Rossi', 'age' => 25 ],
+    ['id' => '3', 'name' => 'John Smith', 'age' => 35 ],
 ]);
 
 // Update records
-$index->update([[ 'id' => 1, 'name' => 'Jane Doe', 'age' => 30 ]]);
+$index->update([[ 'id' => '1', 'name' => 'Jane Doe', 'age' => 30 ]]);
 
 // Delete records
-$index->delete([[ 'id' => 1 ]]);
+$index->delete(['1', '2']);
 
 // Trigger deployment
 $index->deploy();
