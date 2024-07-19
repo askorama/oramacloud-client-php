@@ -2,6 +2,8 @@
 
 namespace OramaCloud\Client\QueryParams;
 
+use OramaCloud\Exceptions\QueryException;
+
 class Where
 {
     private $property;
@@ -38,8 +40,12 @@ class Where
 
     private function validate()
     {
+        if (empty($this->property)) {
+            throw new QueryException("Missing or invalid property: {$this->property}");
+        }
+
         if (!in_array($this->operator, $this->availableOperators)) {
-            throw new \InvalidArgumentException("Invalid operator {$this->operator}");
+            throw new QueryException("Invalid where operator: {$this->operator}");
         }
 
         if (in_array($this->operator, [
@@ -47,7 +53,7 @@ class Where
             WhereOperator::IN,
             WhereOperator::NIN
         ]) && !is_array($this->value)) {
-            throw new \InvalidArgumentException('Where $value parameter must be an array');
+            throw new QueryException('Where $value argument must be an array');
         }
     }
 }

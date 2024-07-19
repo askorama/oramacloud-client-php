@@ -68,7 +68,7 @@ class IndexManager
     {
         if ($manager instanceof CloudManager) {
             $this->manager = $manager;
-        } else if ($manager instanceof string) {
+        } else if (gettype($manager) === 'string') {
             $this->manager = new CloudManager($manager);
         } else {
             throw new \Exception('Invalid manager parameter. It should be an instance of CloudManager or an API key string.');

@@ -2,6 +2,8 @@
 
 namespace OramaCloud\Client\QueryParams;
 
+use OramaCloud\Exceptions\QueryException;
+
 class SortBy
 {
     private $property;
@@ -30,7 +32,7 @@ class SortBy
     private function validate()
     {
         if (!in_array($this->order, $this->availableOrders)) {
-            throw new \InvalidArgumentException('Invalid $order parameter in SortBy');
+            throw new QueryException('Invalid $order parameter in SortBy');
         }
     }
 }

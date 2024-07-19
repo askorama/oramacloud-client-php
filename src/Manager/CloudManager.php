@@ -3,6 +3,7 @@
 namespace OramaCloud\Manager;
 
 use GuzzleHttp\Client as HttpClient;
+use OramaCloud\Exceptions\IndexManagerException;
 use OramaCloud\Manager\IndexManager;
 
 class CloudManager
@@ -25,23 +26,29 @@ class CloudManager
     public function callIndexWebhook(string $endpoint, $payload = null)
     {
         if (!$this->indexId) {
-            throw new \Exception('Index ID is not set');
+            throw new IndexManagerException('Index ID is not set');
         }
 
-        $config = [
-            'headers' => [
+        try {
+            $config['headers'] = [
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . $this->apiKey
-            ]
-        ];
+            ];
 
-        if (!is_null($payload)) {
-            $config['body'] = json_encode($payload);
+            if (!is_null($payload)) {
+                $config['body'] = json_encode($payload);
+            }
+
+            $response = $this->http->request('POST', $this->getEndpoint($endpoint), $config);
+
+            if ($response->getStatusCode() !== 200 && $response->getStatusCode() !== 201) {
+                throw new IndexManagerException('Error calling webhook: ' . $response->getBody()->getContents());
+            }
+
+            return json_decode($response->getBody()->getContents());
+        } catch (\Exception $e) {
+            throw new IndexManagerException($e->getMessage());
         }
-
-        $response = $this->http->request('POST', $this->getEndpoint($endpoint), $config);
-
-        return json_decode($response->getBody()->getContents());
     }
 
     private function getEndpoint(string $endpoint): string

@@ -5,6 +5,7 @@ namespace OramaCloud\Client;
 use OramaCloud\Client\QueryParams\SortBy;
 use OramaCloud\Client\QueryParams\SortByOrder;
 use OramaCloud\Client\QueryParams\Where;
+use OramaCloud\Exceptions\QueryException;
 
 class Query
 {
@@ -17,12 +18,15 @@ class Query
 
     public function __construct($term = '', $mode = 'fulltext')
     {
-        $this->term = $term;
-        $this->mode = $mode;
+        $this->term($term)->mode($mode);
     }
 
     public function term(string $term)
     {
+        if (!is_string($term)) {
+            throw new QueryException('Invalid search term.');
+        }
+
         $this->term = $term;
         return $this;
     }

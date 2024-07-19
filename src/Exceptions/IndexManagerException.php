@@ -1,8 +1,8 @@
 <?php
 
-namespace OramaCloud\Client;
+namespace OramaCloud\Exceptions;
 
-class QueryException extends \Exception
+class IndexManagerException extends \Exception
 {
     public function __construct($message)
     {
