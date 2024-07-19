@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use OramaCloud\Client\QueryParams\Where;
 use OramaCloud\Client\QueryParams\WhereOperator;
+use OramaCloud\Exceptions\QueryException;
 use Tests\TestCase;
 
 class WhereTest extends TestCase
@@ -21,32 +22,32 @@ class WhereTest extends TestCase
 
     public function testThrowExceptionWhenInvalidOperatorIsPassed()
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid operator INVALID');
+        $this->expectException(QueryException::class);
+        $this->expectExceptionMessage('Invalid where operator: INVALID');
 
         new Where('name', 'INVALID', 'mock-expected-value');
     }
 
     public function testThrowExceptionWhenValueIsNotAnArrayForBetweenOperator()
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Where $value parameter must be an array');
+        $this->expectException(QueryException::class);
+        $this->expectExceptionMessage('Where $value argument must be an array');
 
         new Where('age', WhereOperator::BETWEEN, 20);
     }
 
     public function testThrowExceptionWhenValueIsNotAnArrayForInOperator()
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Where $value parameter must be an array');
+        $this->expectException(QueryException::class);
+        $this->expectExceptionMessage('Where $value argument must be an array');
 
         new Where('age', WhereOperator::IN, 20);
     }
 
     public function testThrowExceptionWhenValueIsNotAnArrayForNinOperator()
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Where $value parameter must be an array');
+        $this->expectException(QueryException::class);
+        $this->expectExceptionMessage('Where $value argument must be an array');
 
         new Where('age', WhereOperator::NIN, 20);
     }

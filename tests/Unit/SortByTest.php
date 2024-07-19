@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use OramaCloud\Client\QueryParams\SortBy;
 use OramaCloud\Client\QueryParams\SortByOrder;
+use OramaCloud\Exceptions\QueryException;
 use Tests\TestCase;
 
 class SortByTest extends TestCase
@@ -20,7 +21,7 @@ class SortByTest extends TestCase
 
     public function testThrowExceptionForInvalidOrder()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(QueryException::class);
         $this->expectExceptionMessage('Invalid $order parameter in SortBy');
 
         new SortBy('name', 'INVALID');
