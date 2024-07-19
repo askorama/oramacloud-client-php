@@ -7,7 +7,7 @@ OramaCloud PHP Client SDK.
 ## Install
 
 ```sh
-composer require orama/oramacloud-client
+composer require oramacloud/client
 ```
 
 #### Compatibility
