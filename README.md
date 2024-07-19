@@ -2,7 +2,7 @@
 
 [![Tests](https://github.com/askorama/oramacloud-client-php/actions/workflows/tests.yml/badge.svg)](https://github.com/askorama/oramacloud-client-php/actions/workflows/tests.yml)
 
-OramaCloud PHP Client SDK
+OramaCloud PHP Client SDK.
 
 ## Install
 
@@ -25,8 +25,8 @@ $client = new Client([
     'endpoint' => '<Your Orama Cloud Endpoint>'
 ]);
 
-$query = new Query('red shoes');
-$query->where('price', 'gt', 99.99);
+$query = (new Query('red shoes'))
+    ->where('price', 'gt', 99.99);
 
 $results = $client->search($query);
 ```
@@ -34,16 +34,24 @@ $results = $client->search($query);
 ## Advanced search
 
 ```php
+use OramaCloud\Client;
 use OramaCloud\Client\Query;
 use OramaCloud\Client\QueryParams/WhereOperator;
 use OramaCloud\Client\QueryParams/SortByOrder;
 
-$query = (new Query('red shoes', 'fulltext'))
-    ->where('price', WhereOperator::LTE, 9.99)
-    ->where('gender', WhereOperator::EQ, 'unisex')
-    ->sortBy('price' SortByOrder::DESC)
-    ->limit(5)
-    ->offset(1);
+$client = new Client([
+    'api_key' => '<Your Orama Cloud API Key>',
+    'endpoint' => '<Your Orama Cloud Endpoint>'
+]);
+
+$query = new Query();
+$query->term('red shoes')
+      ->mode('hybrid')
+      ->where('price', WhereOperator::LTE, 9.99)
+      ->where('gender', WhereOperator::EQ, 'unisex')
+      ->sortBy('price' SortByOrder::DESC)
+      ->limit(5)
+      ->offset(1);
 
 $results = $client->search($query);
 ```
