@@ -1,8 +1,10 @@
 # OramaCloud Client PHP
 
+[![Package Version](https://img.shields.io/packagist/v/oramacloud/client)](https://packagist.org/packages/oramacloud/client)
+[![PHP Version](https://img.shields.io/packagist/php-v/oramacloud/client)](https://packagist.org/packages/oramacloud/client)
 [![Tests](https://github.com/askorama/oramacloud-client-php/actions/workflows/tests.yml/badge.svg)](https://github.com/askorama/oramacloud-client-php/actions/workflows/tests.yml)
 
-OramaCloud PHP Client SDK.
+With the OramaCloud PHP Client SDK, you can [perform search queries](https://docs.orama.com/cloud/performing-search/full-text-search) on your [Orama index](https://cloud.orama.com), or programmatically update your index data and trigger new deployments. Integrate Orama Cloud in your PHP application using the [REST APIs](https://docs.orama.com/cloud/data-sources/custom-integrations/rest-apis) to insert and upsert your index data and trigger deployments when it's convinient for your use case. 
 
 ## Install
 
